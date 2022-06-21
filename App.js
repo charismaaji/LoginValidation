@@ -52,6 +52,12 @@ export default function App() {
       return 'Password must be 8-16 Characters Long.';
     }
 
+    // const isContainsSymbol =
+    //   /^(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹]).*$/;
+    // if (!isContainsSymbol.test(value)) {
+    //   return 'Password must contain at least one Special Symbol.';
+    // }
+
     return null;
   };
 
