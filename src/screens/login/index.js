@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import {
   Image,
@@ -7,8 +8,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {user_login} from '../../api/user_api';
+import {Eye, EyeActive} from '../../assets';
 
-export default function App() {
+export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [seePassword, setSeePassword] = useState(true);
@@ -64,7 +67,19 @@ export default function App() {
   const handleLogin = () => {
     const checkPassowrd = checkPasswordValidity(password);
     if (!checkPassowrd) {
-      alert('Success Login');
+      user_login({
+        email: email.toLocaleLowerCase(),
+        password: password,
+      })
+        .then(result => {
+          if (result.status == 200) {
+            AsyncStorage.setItem('AccessToken', result.data.token);
+            navigation.replace('Home');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
     } else {
       alert(checkPassowrd);
     }
@@ -96,14 +111,7 @@ export default function App() {
         <TouchableOpacity
           style={styles.wrapperIcon}
           onPress={() => setSeePassword(!seePassword)}>
-          <Image
-            source={
-              seePassword
-                ? require('./assets/Eye.png')
-                : require('./assets/EyeActive.png')
-            }
-            style={styles.icon}
-          />
+          <Image source={seePassword ? Eye : EyeActive} style={styles.icon} />
         </TouchableOpacity>
       </View>
       {email == '' || password == '' || checkValidEmail == true ? (
